@@ -17,7 +17,7 @@
     }
 
     // Get all records from the database
-    $sql = "SELECT * from $table ";
+    $sql = "SELECT specialistID, clinicID, specialistName, specialistTitle, phone, password, logStatus from $table ";
     $db_data = array();
     $result = $conn->query($sql);
     if($result->num_rows > 0){

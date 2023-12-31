@@ -1,0 +1,9 @@
+Array
+(
+    [name] => image.jpg
+    [full_path] => image.jpg
+    [type] => application/octet-stream
+    [tmp_name] => C:\xampp\tmp\phpAB76.tmp
+    [error] => 0
+    [size] => 40822
+)
