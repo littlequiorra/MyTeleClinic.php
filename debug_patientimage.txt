@@ -3,7 +3,7 @@ Array
     [name] => image.jpg
     [full_path] => image.jpg
     [type] => application/octet-stream
-    [tmp_name] => C:\xampp\tmp\php1391.tmp
+    [tmp_name] => C:\xampp\tmp\php7FAC.tmp
     [error] => 0
     [size] => 40822
 )

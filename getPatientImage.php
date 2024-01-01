@@ -18,19 +18,19 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $specialistID = isset($_GET['specialistID']) ? $_GET['specialistID'] : null;
-    error_log("Received GET_IMAGE request for specialistID: $specialistID");
+    $patientID = isset($_GET['patientID']) ? $_GET['patientID'] : null;
+    error_log("Received GET_IMAGE request for patientID: $patientID");
 
-    if ($specialistID === null) {
+    if ($patientID === null) {
         http_response_code(400);
-        echo json_encode(["status" => "error", "message" => "specialistID is required"]);
+        echo json_encode(["status" => "error", "message" => "patientID is required"]);
         exit;
     }
 
     try {
         // Fetch only the image data from the database
-        $selectStmt = $db->prepare("SELECT profileImage FROM specialist WHERE specialistID = :specialistID");
-        $selectStmt->bindParam(':specialistID', $specialistID, PDO::PARAM_INT);
+        $selectStmt = $db->prepare("SELECT profileImage FROM patient WHERE patientID = :patientID");
+        $selectStmt->bindParam(':patientID', $patientID, PDO::PARAM_INT);
         $selectStmt->execute();
 
         // Fetch the result as an associative array
@@ -43,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
 
-        header('Content-Type: image/jpeg'); // Change to the appropriate image type (jpeg, png, etc.)
+            header('Content-Type: image/jpeg'); // Change to the appropriate image type (jpeg, png, etc.)
 
- // Output the binary image data directly
+
+        // Output the binary image data directly
         echo $imageData['profileImage'];
         exit;
 
@@ -53,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         http_response_code(500);
         $errorDetails = [
             "status" => "error",
-            "message" => "Failed to retrieve specialist image: " . $ex->getMessage(),
+            "message" => "Failed to retrieve patientID image: " . $ex->getMessage(),
             "trace" => $ex->getTraceAsString(),
         ];
         echo json_encode($errorDetails);

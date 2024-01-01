@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   
         // Execute the statement
         if ($stmt->execute()) {
-            // Save the image to a directory on your device
-            $imagePath = '/xampp/htdocs/teleclinic/specialistImage/' . $specialistID . '_profile_image.jpg';
+            $timestamp = time();
+            $imagePath = '/xampp/htdocs/teleclinic/specialistImage/' . $specialistID . '_profile_image_' . $timestamp . '.jpg';
             file_put_contents($imagePath, $imageData);
 
             // Return a JSON response
@@ -49,6 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Return a JSON response
             echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
         }
+
+
 
         // Close the statement
         $stmt->close();

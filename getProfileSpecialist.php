@@ -1,8 +1,6 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-header('Content-Type: image/jpeg');
-
 $hostname = "localhost";
 $database = "teleclinic";
 $username = "root";
@@ -19,7 +17,7 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $specialistID = isset($_GET['specialistID']) ? $_GET['specialistID'] : null;
-    error_log("Received GET_IMAGE request for specialistID: $specialistID");
+    error_log("Received GET request for specialistID: $specialistID");
 
     if ($specialistID === null) {
         http_response_code(400);
@@ -28,36 +26,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     try {
-        // Fetch only the image data from the database
-        $selectStmt = $db->prepare("SELECT profileImage FROM specialist WHERE specialistID = :specialistID");
+        // Fetch existing data from the database, excluding the image data
+        $selectStmt = $db->prepare("SELECT specialistName, phone, specialistTitle FROM specialist WHERE specialistID = :specialistID");
         $selectStmt->bindParam(':specialistID', $specialistID, PDO::PARAM_INT);
         $selectStmt->execute();
 
         // Fetch the result as an associative array
-        $imageData = $selectStmt->fetch(PDO::FETCH_ASSOC);
+        $existingData = $selectStmt->fetch(PDO::FETCH_ASSOC);
 
-        // Check if image data is available
-        if (!$imageData || !isset($imageData['profileImage'])) {
+        // Check if data is available
+        if (!$existingData) {
             http_response_code(404);
-            echo json_encode(["status" => "error", "message" => "Image not found"]);
+            echo json_encode(["status" => "error", "message" => "Specialist not found"]);
             exit;
         }
 
-        header('Content-Type: image/jpeg'); // Change to the appropriate image type (jpeg, png, etc.)
+        // Set the JSON content type header
+        header('Content-Type: application/json');
 
- // Output the binary image data directly
-        echo $imageData['profileImage'];
+        // Send the response as JSON with all fields other than the image
+        echo json_encode(["status" => "success", "data" => $existingData]);
         exit;
 
     } catch (PDOException $ex) {
         http_response_code(500);
         $errorDetails = [
             "status" => "error",
-            "message" => "Failed to retrieve specialist image: " . $ex->getMessage(),
+            "message" => "Failed to retrieve specialist information: " . $ex->getMessage(),
             "trace" => $ex->getTraceAsString(),
         ];
         echo json_encode($errorDetails);
-        error_log("Exception in GET_IMAGE request: " . $ex->getMessage() . "\nTrace: " . $ex->getTraceAsString());
+        error_log("Exception in GET request: " . $ex->getMessage() . "\nTrace: " . $ex->getTraceAsString());
     }
 }
 ?>

@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $specialistID = isset($_GET['specialistID']) ? $_GET['specialistID'] : null;
 
         if ($specialistID !== null) {
-            $stmt = $conn->prepare("SELECT consultation.*, patient.*
+            $stmt = $conn->prepare("SELECT consultation.*, patient.patientID, patient.patientName, patient.phone, patient.gender, patient.birthDate
 FROM consultation
 INNER JOIN patient ON consultation.patientID = patient.patientID
 WHERE consultation.specialistID = ? AND consultation.consultationStatus = 'Accepted'
