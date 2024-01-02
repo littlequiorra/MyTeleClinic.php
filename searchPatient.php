@@ -21,7 +21,7 @@ if (isset($_GET['q'])) {
     // Assuming you're passing specialistID as a parameter
     $specialistID = $_GET['specialistID'];
 
-    $sql = "SELECT consultation.*, patient.* FROM consultation INNER JOIN patient ON consultation.patientID = patient.patientID WHERE consultation.specialistID = ? AND consultation.consultationStatus = 'Accepted' AND patientName LIKE '%$searchQuery%' GROUP BY consultation.patientID";
+    $sql = "SELECT consultation.*,patient.patientID, patient.patientName, patient.phone, patient.gender, patient.birthDate FROM consultation INNER JOIN patient ON consultation.patientID = patient.patientID WHERE consultation.specialistID = ? AND consultation.consultationStatus = 'Accepted' AND patientName LIKE '%$searchQuery%' GROUP BY consultation.patientID";
 
     // Use prepared statement to avoid SQL injection
     $stmt = $conn->prepare($sql);
