@@ -21,17 +21,19 @@ try {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Check if the consultationID is provided
-    if (isset($_REQUEST['patientID'])) {
-        $patientID = $_REQUEST['patientID'];
+       // Check if the consultationID is provided
+    if (isset($_REQUEST['consultationID'])) {
+        $consultationID = $_REQUEST['consultationID'];
 
         // Handle both POST and GET requests
         $fcmToken = '';
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            // Prepare and execute the SQL statement to retrieve the dynamicCallID
-            $stmtSelect = $conn->prepare("SELECT fcmToken FROM patient WHERE patientID = ?");
-            $stmtSelect->bind_param("i", $patientID);
+            // Prepare and execute the SQL statement to retrieve the fcmToken
+            $stmtSelect = $conn->prepare("SELECT p.fcmToken FROM patient p
+                                          JOIN consultation c ON p.patientID = c.patientID
+                                          WHERE c.consultationID = ?");
+            $stmtSelect->bind_param("i", $consultationID);
 
             if ($stmtSelect->execute()) {
                 $stmtSelect->bind_result($fcmToken);
@@ -41,7 +43,7 @@ try {
                     $response->success = true;
                 } else {
                     $response->success = false;
-                    $response->error = "patientID ID not found";
+                    $response->error = "consultationID not found";
                 }
             } else {
                 $response->success = false;
