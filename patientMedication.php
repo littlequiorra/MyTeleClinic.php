@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $specialistID = isset($_GET['specialistID']) ? $_GET['specialistID'] : null;
         // Check if both parameters are present
         if ($patientID !== null&& $specialistID !== null) {
-            $stmt = $db->prepare("SELECT medicine.MedGeneral, medicine.medForm, consultation.consultationDateTime FROM ((medication INNER JOIN consultation ON medication.consultationID = consultation.consultationID) INNER JOIN medicine ON medication.MedID = medicine.MedID) WHERE patientID=:patientID AND specialistID=:specialistID AND consultationStatus = 'Done'");
+            $stmt = $db->prepare("SELECT medicine.MedGeneral, medicine.medForm, medicine.dosage, medication.medInstruction, consultation.consultationDateTime FROM ((medication INNER JOIN consultation ON medication.consultationID = consultation.consultationID) INNER JOIN medicine ON medication.MedID = medicine.MedID) WHERE patientID=:patientID AND specialistID=:specialistID AND consultationStatus = 'Done'");
             $stmt->bindParam(':patientID', $patientID, PDO::PARAM_INT);
             $stmt->bindParam(':specialistID', $specialistID, PDO::PARAM_INT);
             $stmt->execute();
