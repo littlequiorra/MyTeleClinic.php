@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else if ($_SERVER["REQUEST_METHOD"] == "GET") {
     try {
-        $stmt = $db->prepare("SELECT c.*, s.specialistName FROM consultation c JOIN specialist s ON c.specialistID = s.specialistID");
+        $stmt = $db->prepare("SELECT c.*, s.specialistName FROM consultation c JOIN specialist s ON c.specialistID = s.specialistID WHERE consultationStatus IN ('Pending', 'Accepted', 'Decline')");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
         http_response_code(200);
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }else if ($_SERVER["REQUEST_METHOD"] == "GET") {
     try {
-        $stmt = $db->prepare("SELECT * FROM consultation WHERE patientID=? AND specialistID=?");
+        $stmt = $db->prepare("SELECT * FROM consultation WHERE patientID=? AND specialistID=?"); 
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
         http_response_code(200);
