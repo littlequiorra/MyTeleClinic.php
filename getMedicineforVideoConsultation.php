@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $selectStmt = $db->prepare("SELECT * FROM medicine");
         } else {
             // Search for medications based on MedGeneral, MedForm, and Dosage
-            $selectStmt = $db->prepare("SELECT MedGeneral, MedForm, Dosage FROM medicine 
+            $selectStmt = $db->prepare("SELECT MedID,MedGeneral, MedForm, Dosage FROM medicine 
                                        WHERE MedGeneral LIKE :searchTerm 
                                           
                                        LIMIT 10");
