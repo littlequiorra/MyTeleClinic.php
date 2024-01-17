@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $patientID = isset($_GET['patientID']) ? $_GET['patientID'] : null;
 
         if ($patientID !== null) {
-            $stmt = $db->prepare("SELECT consultation.consultationID, consultation.consultationDateTime, specialist.specialistName, consultation.consultationSymptom, consultation.consultationTreatment FROM (consultation INNER JOIN specialist ON consultation.specialistID = specialist.specialistID) WHERE consultation.patientID = :patientID AND consultation.consultationStatus = 'Done'");
+            $stmt = $db->prepare("SELECT consultation.consultationID, consultation.consultationDateTime, specialist.specialistName, consultation.consultationSymptom, consultation.consultationTreatment, consultation.feesConsultation FROM (consultation INNER JOIN specialist ON consultation.specialistID = specialist.specialistID) WHERE consultation.patientID = :patientID AND consultation.consultationStatus = 'Done'");
             $stmt->bindParam(':patientID', $patientID, PDO::PARAM_INT);
 
             // Check if execution is successful before fetching results
