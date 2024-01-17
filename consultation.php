@@ -12,6 +12,7 @@ $response = new stdClass();
 
 $jsonbody = json_decode(file_get_contents('php://input'));
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
@@ -26,14 +27,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else if ($_SERVER["REQUEST_METHOD"] == "GET") {
     try {
-        $stmt = $db->prepare("SELECT c.*, s.specialistName FROM consultation c JOIN specialist s ON c.specialistID = s.specialistID WHERE consultationStatus IN ('Pending', 'Accepted', 'Decline')");
+        $currentDateTime = date('Y-m-d');
+        $stmt = $db->prepare("SELECT c.*, s.specialistName
+                             FROM consultation c
+                             JOIN specialist s ON c.specialistID = s.specialistID
+                             WHERE c.consultationStatus IN ('Pending', 'Accepted', 'Decline')
+                             AND c.consultationDateTime >= :currentDateTime
+                             ORDER BY c.consultationDateTime ASC");
+
+        $stmt->bindParam(':currentDateTime', $currentDateTime, PDO::PARAM_STR);
         $stmt->execute();
+
         $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
         http_response_code(200);
     } catch (Exception $ee) {
         http_response_code(500);
         $response->error = "Error occurred " . $ee->getMessage();
     }
+
 }else if ($_SERVER["REQUEST_METHOD"] == "GET") {
     try {
         $stmt = $db->prepare("SELECT * FROM consultation WHERE patientID=? AND specialistID=?");
