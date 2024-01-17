@@ -43,7 +43,7 @@ $patientID = isset($_GET['patientID']) ? $_GET['patientID'] : null;
     INNER JOIN patient ON consultation.patientID = patient.patientID
     WHERE consultation.specialistID = :specialistID
       AND consultation.patientID = :patientID
-      AND consultation.consultationStatus = 'Accepted'
+      AND consultation.consultationStatus = 'Accepted' OR 'Done'
     GROUP BY consultation.patientID");
 
         $selectStmt->bindParam(':specialistID', $specialistID, PDO::PARAM_INT);
