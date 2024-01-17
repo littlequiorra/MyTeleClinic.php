@@ -27,17 +27,25 @@ try {
 
         // Handle both POST and GET requests
         $dynamicCallID = '';
+        $specialistID = '';
+        $specialistName = '';
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            // Prepare and execute the SQL statement to retrieve the dynamicCallID
-            $stmtSelect = $conn->prepare("SELECT dynamicCallID FROM consultation WHERE consultationID = ?");
+            // Prepare and execute the SQL statement to retrieve the dynamicCallID, specialistID, and specialistName
+            $stmtSelect = $conn->prepare("SELECT c.dynamicCallID, c.specialistID, s.specialistName 
+                                          FROM consultation c 
+                                          JOIN specialist s ON c.specialistID = s.specialistID
+                                          WHERE c.consultationID = ?");
             $stmtSelect->bind_param("i", $consultationID);
 
             if ($stmtSelect->execute()) {
-                $stmtSelect->bind_result($dynamicCallID);
+                $stmtSelect->bind_result($dynamicCallID, $specialistID, $specialistName);
 
                 if ($stmtSelect->fetch()) {
                     $response->dynamicCallID = $dynamicCallID;
+                    $response->specialistID = $specialistID;
+                    $response->specialistName = $specialistName;
+
                     $response->success = true;
                 } else {
                     $response->success = false;
@@ -45,7 +53,7 @@ try {
                 }
             } else {
                 $response->success = false;
-                $response->error = "Error retrieving dynamicCallID: " . $stmtSelect->error;
+                $response->error = "Error retrieving data: " . $stmtSelect->error;
             }
 
             $stmtSelect->close();
