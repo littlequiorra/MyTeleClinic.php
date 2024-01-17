@@ -20,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
         if ($specialistID !== null) {
             $stmt = $conn->prepare("SELECT consultation.*, patient.patientID, patient.icNumber, patient.patientName, patient.phone, patient.gender, patient.birthDate
-FROM consultation
-INNER JOIN patient ON consultation.patientID = patient.patientID
-WHERE consultation.specialistID = ? AND consultation.consultationStatus = 'Accepted'
-GROUP BY consultation.patientID");
+                                    FROM consultation
+                                    INNER JOIN patient ON consultation.patientID = patient.patientID
+                                    WHERE consultation.specialistID = ? AND consultation.consultationStatus = 'Accepted' OR 'Done'
+                                    GROUP BY consultation.patientID");
             $stmt->bind_param("i", $specialistID);
             $stmt->execute();
             $result = $stmt->get_result();
